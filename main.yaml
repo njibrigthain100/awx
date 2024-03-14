@@ -2,7 +2,7 @@
 - name: Install Git, Tree, and Cron on Amazon Linux 2
   hosts: 18.210.28.75
   become: true 
-  gather_facts: true 
+  gather_facts: false 
 
   tasks:
     - name: Install Git, Tree, and Cron packages
