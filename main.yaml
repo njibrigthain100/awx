@@ -1,6 +1,6 @@
 ---
 - name: Install Git, Tree, and Cron on Amazon Linux 2
-  # hosts: All
+  hosts: All
   become: true 
   gather_facts: true 
 
