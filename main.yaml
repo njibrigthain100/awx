@@ -1,6 +1,6 @@
 ---
 - name: Install Git, Tree, and Cron on Amazon Linux 2
-  hosts: localhost
+  hosts: myafrique_inventory
   become: true 
   gather_facts: true 
 
