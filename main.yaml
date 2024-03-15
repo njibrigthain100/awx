@@ -1,16 +1,143 @@
 ---
-- name: Update Amazon Linux 2
+- name: Configure Amazon Linux 2 Server
   hosts: all
   become: yes
   tasks:
-    - name: Update package cache
+    - name: Update package cache and upgrade system packages
       yum:
         name: '*'
         state: latest
         update_cache: yes
 
-    - name: Upgrade all packages
+    - name: Install additional packages
       yum:
-        name: '*'
-        state: latest
-        update_cache: yes
+        name: "{{ item }}"
+        state: present
+      loop:
+        - nginx
+        - mariadb-server
+        - firewalld
+        - wget
+        - unzip
+
+    - name: Start and enable firewalld
+      service:
+        name: firewalld
+        state: started
+        enabled: yes
+
+    - name: Allow HTTP and HTTPS traffic
+      firewalld:
+        service: "{{ item }}"
+        state: enabled
+        permanent: yes
+      with_items:
+        - http
+        - https
+
+    - name: Configure Nginx
+      template:
+        src: nginx.conf.j2
+        dest: /etc/nginx/nginx.conf
+      notify: Restart Nginx
+
+    - name: Deploy static website
+      copy:
+        src: /path/to/your/static/website
+        dest: /usr/share/nginx/html
+      notify: Restart Nginx
+
+    - name: Start and enable Nginx
+      service:
+        name: nginx
+        state: started
+        enabled: yes
+
+    - name: Secure MySQL Installation
+      command: mysql_secure_installation
+      args:
+        stdin: |
+          Y
+          your_mysql_root_password
+          your_mysql_root_password
+          Y
+          Y
+          Y
+          Y
+      register: mysql_secure_installation
+      ignore_errors: yes
+
+    - name: Start and enable MariaDB
+      service:
+        name: mariadb
+        state: started
+        enabled: yes
+
+    - name: Create sample database and user
+      mysql_db:
+        name: sample_db
+        state: present
+      become_user: root
+      become: yes
+      when: mysql_secure_installation.rc == 0
+
+    - name: Create MySQL user
+      mysql_user:
+        name: sample_user
+        password: your_sample_user_password
+        priv: 'sample_db.*:ALL'
+        state: present
+      become_user: root
+      become: yes
+      when: mysql_secure_installation.rc == 0
+
+    - name: Download Prometheus
+      get_url:
+        url: "https://github.com/prometheus/prometheus/releases/download/v2.33.0/prometheus-2.33.0.linux-amd64.tar.gz"
+        dest: /tmp/prometheus.tar.gz
+
+    - name: Extract Prometheus
+      unarchive:
+        src: /tmp/prometheus.tar.gz
+        dest: /opt/
+        remote_src: yes
+      notify: Restart Prometheus
+
+    - name: Copy Prometheus configuration file
+      template:
+        src: prometheus.yml.j2
+        dest: /opt/prometheus-2.33.0.linux-amd64/prometheus.yml
+      notify: Restart Prometheus
+
+    - name: Start and enable Prometheus
+      systemd:
+        name: prometheus
+        enabled: yes
+        state: started
+
+    - name: Download Grafana
+      get_url:
+        url: "https://dl.grafana.com/oss/release/grafana-8.1.5-1.x86_64.rpm"
+        dest: /tmp/grafana.rpm
+
+    - name: Install Grafana
+      yum:
+        name: /tmp/grafana.rpm
+        state: present
+
+    - name: Start and enable Grafana
+      systemd:
+        name: grafana-server
+        enabled: yes
+        state: started
+
+  handlers:
+    - name: Restart Nginx
+      service:
+        name: nginx
+        state: restarted
+
+    - name: Restart Prometheus
+      systemd:
+        name: prometheus
+        state: restarted
