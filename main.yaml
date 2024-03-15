@@ -28,14 +28,14 @@
         state: started
         enabled: yes
 
-    - name: Allow HTTP and HTTPS traffic
-      firewalld:
-        service: "{{ item }}"
-        state: enabled
-        permanent: yes
-      with_items:
-        - http
-        - https
+    # - name: Allow HTTP and HTTPS traffic
+    #   firewalld:
+    #     service: "{{ item }}"
+    #     state: enabled
+    #     permanent: yes
+    #   with_items:
+    #     - http
+    #     - https
 
     - name: Configure Nginx
       template:
@@ -55,25 +55,25 @@
         state: started
         enabled: yes
 
-    - name: Secure MySQL Installation
-      command: mysql_secure_installation
-      args:
-        stdin: |
-          Y
-          your_mysql_root_password
-          your_mysql_root_password
-          Y
-          Y
-          Y
-          Y
-      register: mysql_secure_installation
-      ignore_errors: yes
+    # - name: Secure MySQL Installation
+    #   command: mysql_secure_installation
+    #   args:
+    #     stdin: |
+    #       Y
+    #       your_mysql_root_password
+    #       your_mysql_root_password
+    #       Y
+    #       Y
+    #       Y
+    #       Y
+    #   register: mysql_secure_installation
+    #   ignore_errors: yes
 
-    - name: Start and enable MariaDB
-      service:
-        name: mariadb
-        state: started
-        enabled: yes
+    # - name: Start and enable MariaDB
+    #   service:
+    #     name: mariadb
+    #     state: started
+    #     enabled: yes
 
     # - name: Create sample database and user
     #   mysql_db:
