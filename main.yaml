@@ -1,21 +1,16 @@
 ---
-- name: Install Git, Tree, and Cron on Amazon Linux 2
+- name: Update Amazon Linux 2
   hosts: all
-  become: true 
-  gather_facts: false 
-
+  become: yes
   tasks:
-    - name: Install Git, Tree, and Cron packages
+    - name: Update package cache
       yum:
-        name: "{{ item }}"
-        state: present
-      loop:
-        - git
-        - tree
-        - cronie  # Cron package for Amazon Linux 2
+        name: '*'
+        state: latest
+        update_cache: yes
 
-    - name: Start and enable cron service
-      service:
-        name: crond
-        state: started
-        enabled: yes
+    - name: Upgrade all packages
+      yum:
+        name: '*'
+        state: latest
+        update_cache: yes
