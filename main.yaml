@@ -22,11 +22,11 @@
         - wget
         - unzip
 
-    - name: Start and enable firewalld
-      service:
-        name: firewalld
-        state: started
-        enabled: yes
+    # - name: Start and enable firewalld
+    #   service:
+    #     name: firewalld
+    #     state: started
+    #     enabled: yes
 
     # - name: Allow HTTP and HTTPS traffic
     #   firewalld:
@@ -37,23 +37,23 @@
     #     - http
     #     - https
 
-    - name: Configure Nginx
-      template:
-        src: nginx.conf.j2
-        dest: /etc/nginx/nginx.conf
-      notify: Restart Nginx
+    # - name: Configure Nginx
+    #   template:
+    #     src: nginx.conf.j2
+    #     dest: /etc/nginx/nginx.conf
+    #   notify: Restart Nginx
 
-    - name: Deploy static website
-      copy:
-        src: /path/to/your/static/website
-        dest: /usr/share/nginx/html
-      notify: Restart Nginx
+    # - name: Deploy static website
+    #   copy:
+    #     src: /path/to/your/static/website
+    #     dest: /usr/share/nginx/html
+    #   notify: Restart Nginx
 
-    - name: Start and enable Nginx
-      service:
-        name: nginx
-        state: started
-        enabled: yes
+    # - name: Start and enable Nginx
+    #   service:
+    #     name: nginx
+    #     state: started
+    #     enabled: yes
 
     # - name: Secure MySQL Installation
     #   command: mysql_secure_installation
