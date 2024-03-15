@@ -10,7 +10,7 @@
         update_cache: yes
     
     - name: Install nginx
-      ansible.builtin.shell: sudo amazon-linux-extras install nginx1
+      ansible.builtin.shell: sudo amazon-linux-extras install nginx1 -y
 
     - name: Install additional packages
       yum:
