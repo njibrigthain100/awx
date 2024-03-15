@@ -73,23 +73,23 @@
         state: started
         enabled: yes
 
-    - name: Create sample database and user
-      mysql_db:
-        name: sample_db
-        state: present
-      become_user: root
-      become: yes
-      when: mysql_secure_installation.rc == 0
+    # - name: Create sample database and user
+    #   mysql_db:
+    #     name: sample_db
+    #     state: present
+    #   become_user: root
+    #   become: yes
+    #   when: mysql_secure_installation.rc == 0
 
-    - name: Create MySQL user
-      mysql_user:
-        name: sample_user
-        password: your_sample_user_password
-        priv: 'sample_db.*:ALL'
-        state: present
-      become_user: root
-      become: yes
-      when: mysql_secure_installation.rc == 0
+    # - name: Create MySQL user
+    #   mysql_user:
+    #     name: sample_user
+    #     password: your_sample_user_password
+    #     priv: 'sample_db.*:ALL'
+    #     state: present
+    #   become_user: root
+    #   become: yes
+    #   when: mysql_secure_installation.rc == 0
 
     - name: Download Prometheus
       get_url:
